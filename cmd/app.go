@@ -4,11 +4,11 @@ import (
 	"context"
 	"github.com/spf13/cobra"
 	"user-export/pkg/httpprovider"
-	"user-export/pkg/ksexport"
+	"user-export/pkg/ksgenerator"
 )
 
 func NewCommand() *cobra.Command {
-	keOptions := ksexport.NewOptions()
+	keOptions := ksgenerator.NewOptions()
 	httpProviderOptions := httpprovider.NewOptions()
 	rootCmd := &cobra.Command{
 		Use:   "user-export",
@@ -17,16 +17,11 @@ func NewCommand() *cobra.Command {
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			export, err := ksexport.NewKubernetesExport(keOptions)
+			generator, err := ksgenerator.NewKSGenerator(keOptions)
 			if err != nil {
 				return err
 			}
-
-			provider, err := httpprovider.NewHttpProvider(httpProviderOptions)
-			if err != nil {
-				return err
-			}
-			err = export.Generate(context.Background(), provider)
+			err = generator.Generate(context.Background(), httpprovider.NewFakeProvider(httpProviderOptions))
 			if err != nil {
 				return err
 			}

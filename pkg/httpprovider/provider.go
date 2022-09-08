@@ -30,9 +30,8 @@ func NewHttpProvider(options *Options) (pkg.UserProvider, error) {
 
 }
 
-func (h *httpUserProvider) List() ([]pkg.UserInterface, error) {
-	users := make([]user, 0)
-	userInterfaces := make([]pkg.UserInterface, 0)
+func (h *httpUserProvider) List() ([]pkg.User, error) {
+	users := make([]pkg.User, 0)
 	u, err := url.Parse(fmt.Sprintf("%s/%s", h.Host, h.Path))
 	if err != nil {
 		return nil, err
@@ -56,10 +55,8 @@ func (h *httpUserProvider) List() ([]pkg.UserInterface, error) {
 	}
 
 	for _, u := range users {
-		u.Source = source
-		userInterfaces = append(userInterfaces, &u)
+		u.Source = h.Source
 	}
 
-	return userInterfaces, nil
-
+	return users, nil
 }

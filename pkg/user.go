@@ -1,38 +1,38 @@
-package httpprovider
+package pkg
 
 import (
+	"user-export/pkg/api/v1alpha2"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"user-export/pkg/api"
 )
 
-type user struct {
+type User struct {
 	ID     string `json:"id"`
 	Source string `json:"-"`
 	Name   string `json:"username"`
 	Email  string `json:"email"`
 }
 
-func (u *user) ConvertCR() *api.User {
-	userCRD := &api.User{
+func (u User) ConvertCR() *v1alpha2.User {
+	userCRD := &v1alpha2.User{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "users",
 			APIVersion: "iam.kubesphere.io/v1alpha2",
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Name: u.Name,
-			Annotations: map[string]string{
-				"kubesphere.io/creator": "admin",
-				// TODO add provider relevant ID, and provider name
+			Labels: map[string]string{
+				"iam.kubesphere.io/identify-provider": u.Source,
+				"iam.kubesphere.io/origin-uid":        u.ID,
 			},
 			Finalizers: []string{
 				"finalizers.kubesphere.io/users",
 			},
 		},
-		Spec: api.UserSpec{
+		Spec: v1alpha2.UserSpec{
 			Email: u.Email,
-			Lang:  "zh",
 		},
-		Status: api.UserStatus{
+		Status: v1alpha2.UserStatus{
 			State: "Active",
 		},
 	}

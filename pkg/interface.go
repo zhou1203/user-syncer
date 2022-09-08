@@ -2,11 +2,12 @@ package pkg
 
 import (
 	"context"
-	"user-export/pkg/api"
+
+	"user-export/pkg/api/v1alpha2"
 )
 
 type UserProvider interface {
-	List() ([]UserInterface, error)
+	List() ([]User, error)
 }
 
 type UserGenerator interface {
@@ -14,5 +15,5 @@ type UserGenerator interface {
 }
 
 type UserInterface interface {
-	ConvertCR() *api.User
+	ConvertCR() *v1alpha2.User
 }
