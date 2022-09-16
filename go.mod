@@ -1,4 +1,4 @@
-module user-export
+module user-generator
 
 go 1.18
 

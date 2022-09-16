@@ -4,28 +4,22 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ec678429-e9f6-4b08-8236-ed2e7c7daf74" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/pkg/api/v1alpha2/groupversion_info.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/api/v1alpha2/user_types.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/api/v1alpha2/zz_generated.deepcopy.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/httpprovider/facke_provider.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/httpprovider/provider_test.go" afterDir="false" />
+    <list default="true" id="ec678429-e9f6-4b08-8236-ed2e7c7daf74" name="Changes" comment="refactor code">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/app.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/api/user.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/httpprovider/options.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/httpprovider/options.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/httpprovider/provider.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/httpprovider/provider.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/httpprovider/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/interface.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/ksgenerator/ksgenerator.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/ksgenerator/ksgenerator.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/user.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
   </component>
   <component name="GOROOT" url="file://D:/go1.18" />
   <component name="Git.Settings">
@@ -35,11 +29,13 @@
     <option name="indexEntireGoPath" value="false" />
   </component>
   <component name="ProjectId" id="2EWet6QpdXXhZDlAlVzwieaw4lI" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DefaultGoTemplateProperty" value="Go File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -48,14 +44,29 @@
     <property name="go.modules.go.list.on.any.changes.was.set" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$" />
-    <property name="settings.editor.selected.configurable" value="ssh.settings" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\PC\Desktop\user-export\cmd" />
+      <recent name="C:\Users\PC\Desktop\user-export\main" />
+      <recent name="C:\Users\PC\Desktop\user-export\cmd\app" />
       <recent name="C:\Users\PC\Desktop\user-export\pkg" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Go Build.go build json_marshal.go">
+    <configuration name="go build json_marshal.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="user-export" />
+      <working_directory value="$PROJECT_DIR$" />
+      <envs>
+        <env name="GO111MODULE" value="off" />
+      </envs>
+      <kind value="FILE" />
+      <package value="user-generator" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$APPLICATION_CONFIG_DIR$/scratches/json_marshal.go" />
+      <method v="2" />
+    </configuration>
     <configuration name="go build user-export" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="user-export" />
       <working_directory value="$PROJECT_DIR$" />
@@ -76,8 +87,35 @@
       <filePath value="$PROJECT_DIR$/main.go" />
       <method v="2" />
     </configuration>
+    <configuration name="go build user-export/cmd" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="user-export" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="user-export/cmd" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/cmd/main.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build user-export/main" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="user-export" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="user-export/main" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/main/main.go" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Go Build.go build user-export" />
+      <item itemvalue="Go Build.go build user-export/cmd" />
+      <item itemvalue="Go Build.go build user-export/main" />
+      <item itemvalue="Go Build.go build json_marshal.go" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build json_marshal.go" />
+        <item itemvalue="Go Build.go build user-export/main" />
+        <item itemvalue="Go Build.go build user-export/cmd" />
         <item itemvalue="Go Build.go build user-export" />
       </list>
     </recent_temporary>
@@ -91,11 +129,30 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="add user api" />
+    <MESSAGE value="add deployment" />
+    <MESSAGE value="refactor code" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor code" />
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>
@@ -104,24 +161,29 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cmd/app.go</url>
+          <url>file://$PROJECT_DIR$/cmd/app/app.go</url>
           <line>19</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/pkg/ksgenerator/ksgenerator.go</url>
-          <line>49</line>
+          <line>58</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/pkg/ksgenerator/ksgenerator.go</url>
-          <line>23</line>
+          <line>32</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/pkg/httpprovider/facke_provider.go</url>
           <line>38</line>
           <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$APPLICATION_CONFIG_DIR$/scratches/json_marshal.go</url>
+          <line>122</line>
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

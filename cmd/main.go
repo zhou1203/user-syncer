@@ -1,12 +1,12 @@
 package main
 
 import (
-	"user-export/cmd"
+	"user-generator/cmd/app"
 )
 
 func main() {
 
-	command := cmd.NewCommand()
+	command := app.NewCommand()
 	err := command.Execute()
 	if err != nil {
 		return

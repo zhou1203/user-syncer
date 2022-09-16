@@ -3,10 +3,12 @@ package ksgenerator
 import (
 	"context"
 	"fmt"
+	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/client-go/kubernetes/scheme"
+	"k8s.io/client-go/rest"
 	"log"
-	"user-export/pkg"
-	"user-export/pkg/api/v1alpha2"
+	"user-generator/pkg"
+	"user-generator/pkg/api/v1alpha2"
 
 	"k8s.io/client-go/tools/clientcmd"
 	rtclient "sigs.k8s.io/controller-runtime/pkg/client"
@@ -17,10 +19,17 @@ type ksGenerator struct {
 }
 
 func NewKSGenerator(options *Options) (pkg.UserGenerator, error) {
-	restConfig, err := clientcmd.BuildConfigFromFlags("", options.KubeConfigPath)
+	var restConfig *rest.Config
+	var err error
+	if options.KubeConfigPath == "InCluster" {
+		restConfig, err = rest.InClusterConfig()
+	} else {
+		restConfig, err = clientcmd.BuildConfigFromFlags("", options.KubeConfigPath)
+	}
 	if err != nil {
 		return nil, err
 	}
+
 	sch := scheme.Scheme
 	err = v1alpha2.AddToScheme(sch)
 	if err != nil {
@@ -49,9 +58,14 @@ func (ke *ksGenerator) Generate(ctx context.Context, provider pkg.UserProvider) 
 		cr := u.ConvertCR()
 		err := ke.createUser(ctx, cr)
 		if err != nil {
-			return err
+			if errors.IsAlreadyExists(err) {
+				log.Println(err)
+			} else {
+				return err
+			}
+		} else {
+			log.Println(fmt.Sprintf("create user %s success", cr.Name))
 		}
-		log.Println(fmt.Sprintf("create user %s success", cr.Name))
 	}
 	return nil
 }

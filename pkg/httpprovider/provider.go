@@ -3,16 +3,17 @@ package httpprovider
 import (
 	"fmt"
 	"io/ioutil"
-	"k8s.io/apimachinery/pkg/util/json"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
-	"user-export/pkg"
+
+	"k8s.io/apimachinery/pkg/util/json"
+
+	"user-generator/pkg"
 
 	"github.com/gojek/heimdall/v7/httpclient"
 )
-
-const source = "ldap"
 
 type httpUserProvider struct {
 	*Options
@@ -24,14 +25,14 @@ func NewHttpProvider(options *Options) (pkg.UserProvider, error) {
 		Options: options,
 	}
 
-	provider.httpClient = httpclient.NewClient(httpclient.WithHTTPTimeout(1000 * time.Millisecond))
+	provider.httpClient = httpclient.NewClient(httpclient.WithHTTPTimeout(30 * time.Second))
 
 	return provider, nil
 
 }
 
-func (h *httpUserProvider) List() ([]pkg.User, error) {
-	users := make([]pkg.User, 0)
+func (h *httpUserProvider) List() ([]*pkg.User, error) {
+	users := make([]*pkg.User, 0)
 	u, err := url.Parse(fmt.Sprintf("%s/%s", h.Host, h.Path))
 	if err != nil {
 		return nil, err
@@ -55,6 +56,9 @@ func (h *httpUserProvider) List() ([]pkg.User, error) {
 	}
 
 	for _, u := range users {
+		if strings.Contains(u.Name, "_") {
+			u.Name = strings.Replace(u.Name, "_", "-", -1)
+		}
 		u.Source = h.Source
 	}
 

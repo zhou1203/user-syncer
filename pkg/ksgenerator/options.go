@@ -13,7 +13,7 @@ func NewOptions() *Options {
 }
 
 func (o *Options) Flags() *pflag.FlagSet {
-	flags := pflag.NewFlagSet("kube-export", pflag.ContinueOnError)
+	flags := pflag.NewFlagSet("k8s generator", pflag.ContinueOnError)
 	flags.StringVar(&o.KubeConfigPath, "kubeconfig", o.KubeConfigPath, "kubeconfig file absolute path.")
 	return flags
 }
