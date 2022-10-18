@@ -3,12 +3,12 @@ package ksgenerator
 import (
 	"context"
 	"fmt"
-	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/client-go/kubernetes/scheme"
-	"k8s.io/client-go/rest"
 	"log"
 	"user-generator/pkg"
 	"user-generator/pkg/api/v1alpha2"
+
+	"k8s.io/client-go/kubernetes/scheme"
+	"k8s.io/client-go/rest"
 
 	"k8s.io/client-go/tools/clientcmd"
 	rtclient "sigs.k8s.io/controller-runtime/pkg/client"
@@ -56,15 +56,13 @@ func (ke *ksGenerator) Generate(ctx context.Context, provider pkg.UserProvider) 
 	}
 	for _, u := range list {
 		cr := u.ConvertCR()
-		err := ke.createUser(ctx, cr)
-		if err != nil {
-			if errors.IsAlreadyExists(err) {
+		if u.Status == 0 {
+			err := ke.createUser(ctx, cr)
+			if err != nil {
 				log.Println(err)
 			} else {
-				return err
+				log.Println(fmt.Sprintf("create user %s success", cr.Name))
 			}
-		} else {
-			log.Println(fmt.Sprintf("create user %s success", cr.Name))
 		}
 	}
 	return nil
