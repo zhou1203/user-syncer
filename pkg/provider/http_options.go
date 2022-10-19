@@ -1,4 +1,4 @@
-package httpprovider
+package provider
 
 import "github.com/spf13/pflag"
 
@@ -13,9 +13,9 @@ func NewOptions() *Options {
 }
 
 func (o *Options) Flags() *pflag.FlagSet {
-	fs := pflag.NewFlagSet("http provider", pflag.ContinueOnError)
-	fs.StringVar(&o.Host, "host", o.Host, "http user provider host")
-	fs.StringVar(&o.Path, "path", o.Path, "http user provider list path")
+	fs := pflag.NewFlagSet("provider syncer", pflag.ContinueOnError)
+	fs.StringVar(&o.Host, "host", o.Host, "provider user syncer host")
+	fs.StringVar(&o.Path, "path", o.Path, "provider user syncer list path")
 	fs.StringVar(&o.Source, "source", o.Source, "the user`s source")
 	return fs
 }

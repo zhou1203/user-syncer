@@ -1,4 +1,4 @@
-FROM golang:1.18
+FROM golang:1.18 as builder
 
 WORKDIR /usr/src/app
 
@@ -8,5 +8,9 @@ RUN go env -w GOPROXY=https://goproxy.cn,direct
 RUN go mod download && go mod verify
 
 COPY . .
-RUN go build -v -o /usr/local/bin/user-generator ./cmd
-CMD ["/bin/sh"]
+RUN go build -v -o /usr/local/bin/user-syncer ./cmd
+
+FROM alpine:3.16
+RUN apk add --update mysql-client
+COPY --from=builder /usr/src/app/cmd /usr/local/bin/
+CMD ["sh"]

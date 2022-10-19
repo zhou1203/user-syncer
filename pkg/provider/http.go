@@ -1,12 +1,14 @@
-package httpprovider
+package provider
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
+	"k8s.io/klog/v2"
 	"net/http"
-	"net/url"
 	"strings"
 	"time"
+	"user-generator/pkg/types"
 
 	"k8s.io/apimachinery/pkg/util/json"
 
@@ -20,7 +22,7 @@ type httpUserProvider struct {
 	httpClient *httpclient.Client
 }
 
-func NewHttpProvider(options *Options) (pkg.UserProvider, error) {
+func NewHttpProvider(options *Options) (pkg.Provider, error) {
 	provider := &httpUserProvider{
 		Options: options,
 	}
@@ -31,16 +33,15 @@ func NewHttpProvider(options *Options) (pkg.UserProvider, error) {
 
 }
 
-func (h *httpUserProvider) List() ([]*pkg.User, error) {
-	users := make([]*pkg.User, 0)
-	u, err := url.Parse(fmt.Sprintf("%s/%s", h.Host, h.Path))
+func (h *httpUserProvider) List(ctx context.Context) ([]*types.User, error) {
+	users := make([]*types.User, 0)
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/%s", h.Host, h.Path), nil)
 	if err != nil {
+		klog.Error(err)
 		return nil, err
 	}
-	req := &http.Request{
-		URL:    u,
-		Method: http.MethodGet,
-	}
+
 	response, err := h.httpClient.Do(req)
 	if err != nil {
 		return nil, err

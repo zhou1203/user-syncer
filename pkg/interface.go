@@ -2,16 +2,17 @@ package pkg
 
 import (
 	"context"
+	"user-generator/pkg/types"
 
 	"user-generator/pkg/api/v1alpha2"
 )
 
-type UserProvider interface {
-	List() ([]*User, error)
+type Provider interface {
+	List(ctx context.Context) ([]*types.User, error)
 }
 
-type UserGenerator interface {
-	Generate(context.Context, UserProvider) error
+type Syncer interface {
+	Sync(context.Context, Provider) error
 }
 
 type UserInterface interface {

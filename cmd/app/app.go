@@ -3,29 +3,49 @@ package app
 import (
 	"context"
 	"github.com/spf13/cobra"
-	"user-generator/pkg/httpprovider"
-	"user-generator/pkg/ksgenerator"
+	"user-generator/pkg"
+	"user-generator/pkg/db"
+	"user-generator/pkg/provider"
+	"user-generator/pkg/syncer"
 )
 
 func NewCommand() *cobra.Command {
-	keOptions := ksgenerator.NewOptions()
-	httpProviderOptions := httpprovider.NewOptions()
+	kubeOptions := pkg.NewKubeOptions()
+	httpProviderOptions := provider.NewOptions()
 	rootCmd := &cobra.Command{
-		Use:   "user-generator",
-		Short: "A generator for Cobra based Applications",
+		Use:   "user-syncer",
+		Short: "A syncer for Cobra based Applications",
 		Long: `Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			generator, err := ksgenerator.NewKSGenerator(keOptions)
+			dbConfig, err := db.NewConfigFromEnv()
 			if err != nil {
 				return err
 			}
-			provider, err := httpprovider.NewHttpProvider(httpProviderOptions)
+
+			database, err := db.Connect(dbConfig, nil)
 			if err != nil {
 				return err
 			}
-			err = generator.Generate(context.Background(), provider)
+
+			client, err := pkg.NewKubernetesClient(kubeOptions)
+			if err != nil {
+				return err
+			}
+
+			ksGenerator := syncer.NewKSSyncer(client)
+
+			httpProvider, err := provider.NewHttpProvider(httpProviderOptions)
+			if err != nil {
+				return err
+			}
+			err = ksGenerator.Sync(context.Background(), httpProvider)
+			if err != nil {
+				return err
+			}
+
+			err = syncer.NewDBSyncer(database).Sync(context.Background(), provider.NewKSProvider(client))
 			if err != nil {
 				return err
 			}
@@ -33,7 +53,7 @@ to quickly create a Cobra application.`,
 		},
 	}
 	fs := rootCmd.Flags()
-	fs.AddFlagSet(keOptions.Flags())
+	fs.AddFlagSet(kubeOptions.Flags())
 	fs.AddFlagSet(httpProviderOptions.Flags())
 
 	return rootCmd

@@ -1,0 +1,14 @@
+mysql:
+  auth:
+    rootPassword: P@88w0rd
+    database: ldap-manager
+    username: chinamobile
+    password: P@88w0rd
+  fullnameOverride: mysql
+
+job:
+  image: wenhahozhou/user-syncer:latest
+  command:
+    kubeconfig: InCluster
+    source: ldap
+

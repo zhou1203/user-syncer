@@ -1,24 +1,23 @@
-package pkg
+package types
 
 import (
-	"strconv"
-
 	"user-generator/pkg/api/v1alpha2"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type User struct {
-	ID                int64  `json:"id"`
-	Source            string `json:"-"`
-	Status            int    `json:"status"`
-	Name              string `json:"username"`
-	Email             string `json:"email"`
-	EncryptedPassword string `json:"password"`
+	ID      string `json:"id" db:"USER_ID"`
+	LoginNo string `db:"LOGIN_NO"`
+	Status  int    `json:"status" db:"APP_ACCT_STATUS"`
+	Name    string `json:"username" db:"USER_NAME"`
+	Email   string `json:"email" db:"EMAIL"`
+	OrgID   string `json:"orgId" db:"ORG_ID"`
+	Mobile  string `json:"mobile" db:"MOBILE"`
+	Source  string `json:"-"`
 }
 
 func (u User) ConvertCR() *v1alpha2.User {
-	id := strconv.FormatInt(u.ID, 10)
 	userCRD := &v1alpha2.User{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "User",
@@ -28,7 +27,10 @@ func (u User) ConvertCR() *v1alpha2.User {
 			Name: u.Name,
 			Labels: map[string]string{
 				"iam.kubesphere.io/identify-provider": u.Source,
-				"iam.kubesphere.io/origin-uid":        id,
+				"iam.kubesphere.io/origin-uid":        u.ID,
+			},
+			Annotations: map[string]string{
+				"ldap-manager/org-id": u.OrgID,
 			},
 		},
 		Spec: v1alpha2.UserSpec{
