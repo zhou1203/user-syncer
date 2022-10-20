@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strings"
 	"time"
-	"user-generator/pkg/domain"
-	"user-generator/pkg/types"
+	"user-syncer/pkg/domain"
+	"user-syncer/pkg/types"
 
 	"k8s.io/klog/v2"
 

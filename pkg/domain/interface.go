@@ -2,7 +2,7 @@ package domain
 
 import (
 	"context"
-	"user-generator/pkg/types"
+	"user-syncer/pkg/types"
 )
 
 type Provider interface {

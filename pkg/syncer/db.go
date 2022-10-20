@@ -3,9 +3,9 @@ package syncer
 import (
 	"context"
 	"log"
-	"user-generator/pkg/db"
-	"user-generator/pkg/domain"
-	"user-generator/pkg/types"
+	"user-syncer/pkg/db"
+	"user-syncer/pkg/domain"
+	"user-syncer/pkg/types"
 
 	upperdb "github.com/upper/db/v4"
 )

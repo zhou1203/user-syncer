@@ -3,9 +3,9 @@ package provider
 import (
 	"context"
 
-	"user-generator/pkg/api/v1alpha2"
-	"user-generator/pkg/domain"
-	"user-generator/pkg/types"
+	"user-syncer/pkg/api/v1alpha2"
+	"user-syncer/pkg/domain"
+	"user-syncer/pkg/types"
 
 	rtclient "sigs.k8s.io/controller-runtime/pkg/client"
 )

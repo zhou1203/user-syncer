@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"user-generator/pkg/api/v1alpha2"
+	"user-syncer/pkg/api/v1alpha2"
 
 	"github.com/spf13/pflag"
 	"k8s.io/client-go/kubernetes/scheme"

@@ -3,8 +3,8 @@ package provider
 import (
 	"context"
 
-	"user-generator/pkg/domain"
-	"user-generator/pkg/types"
+	"user-syncer/pkg/domain"
+	"user-syncer/pkg/types"
 )
 
 type fakeProvider struct {

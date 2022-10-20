@@ -1,9 +1,9 @@
 package app
 
 import (
-	"user-generator/pkg/db"
-	"user-generator/pkg/domain"
-	"user-generator/pkg/provider"
+	"user-syncer/pkg/db"
+	"user-syncer/pkg/domain"
+	"user-syncer/pkg/provider"
 
 	"github.com/spf13/cobra"
 )

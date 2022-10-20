@@ -4,9 +4,9 @@ import (
 	"context"
 	"log"
 	"reflect"
-	"user-generator/pkg/api/v1alpha2"
-	"user-generator/pkg/domain"
-	"user-generator/pkg/types"
+	"user-syncer/pkg/api/v1alpha2"
+	"user-syncer/pkg/domain"
+	"user-syncer/pkg/types"
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

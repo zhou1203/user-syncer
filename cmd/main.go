@@ -1,7 +1,7 @@
 package main
 
 import (
-	"user-generator/cmd/app"
+	"user-syncer/cmd/app"
 )
 
 func main() {
