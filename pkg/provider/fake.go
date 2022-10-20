@@ -2,7 +2,8 @@ package provider
 
 import (
 	"context"
-	"user-generator/pkg"
+
+	"user-generator/pkg/domain"
 	"user-generator/pkg/types"
 )
 
@@ -10,7 +11,7 @@ type fakeProvider struct {
 	options *Options
 }
 
-func NewFakeProvider(options *Options) pkg.Provider {
+func NewFakeProvider(options *Options) domain.Provider {
 	return &fakeProvider{
 		options: options,
 	}
@@ -18,24 +19,32 @@ func NewFakeProvider(options *Options) pkg.Provider {
 
 var users = []types.User{
 	{
-		ID:    "1",
-		Name:  "fake-syncer-user-1",
-		Email: "fakeprovider@kubesphere.io",
+		ID:     "1",
+		Name:   "fake-syncer-user-1",
+		Email:  "fakeprovider@kubesphere.io",
+		OrgID:  "51111",
+		Status: 1,
 	},
 	{
-		ID:    "2",
-		Name:  "fake-syncer-user-2",
-		Email: "fakeprovider2@kubesphere.io",
+		ID:     "2",
+		Name:   "fake-syncer-user-2",
+		Email:  "fakeprovider2@kubesphere.io",
+		OrgID:  "51111",
+		Status: 1,
 	},
 	{
-		ID:    "3",
-		Name:  "fake-syncer-user-3",
-		Email: "fakeprovider3@kubesphere.io",
+		ID:     "3",
+		Name:   "fake-syncer-user-3",
+		Email:  "fakeprovider3@kubesphere.io",
+		OrgID:  "51111",
+		Status: 1,
 	},
 	{
-		ID:    "4",
-		Name:  "fake-syncer-user-4",
-		Email: "fakeprovider4@kubesphere.io",
+		ID:     "4",
+		Name:   "fake-syncer-user-4",
+		Email:  "fakeprovider4@kubesphere.io",
+		OrgID:  "51111",
+		Status: 1,
 	},
 }
 

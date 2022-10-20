@@ -1,12 +1,13 @@
-package pkg
+package domain
 
 import (
+	"user-generator/pkg/api/v1alpha2"
+
 	"github.com/spf13/pflag"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	rtclient "sigs.k8s.io/controller-runtime/pkg/client"
-	"user-generator/pkg/api/v1alpha2"
 )
 
 func NewKubernetesClient(options *KubeOptions) (rtclient.Client, error) {

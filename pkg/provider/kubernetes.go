@@ -2,10 +2,12 @@ package provider
 
 import (
 	"context"
-	rtclient "sigs.k8s.io/controller-runtime/pkg/client"
-	"user-generator/pkg"
+
 	"user-generator/pkg/api/v1alpha2"
+	"user-generator/pkg/domain"
 	"user-generator/pkg/types"
+
+	rtclient "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 type ksProvider struct {
@@ -42,6 +44,6 @@ func (k *ksProvider) List(ctx context.Context) ([]*types.User, error) {
 	return users, nil
 }
 
-func NewKSProvider(client rtclient.Client) pkg.Provider {
+func NewKSProvider(client rtclient.Client) domain.Provider {
 	return &ksProvider{client: client}
 }

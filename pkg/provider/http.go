@@ -4,15 +4,15 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
-	"k8s.io/klog/v2"
 	"net/http"
 	"strings"
 	"time"
+	"user-generator/pkg/domain"
 	"user-generator/pkg/types"
 
-	"k8s.io/apimachinery/pkg/util/json"
+	"k8s.io/klog/v2"
 
-	"user-generator/pkg"
+	"k8s.io/apimachinery/pkg/util/json"
 
 	"github.com/gojek/heimdall/v7/httpclient"
 )
@@ -22,7 +22,7 @@ type httpUserProvider struct {
 	httpClient *httpclient.Client
 }
 
-func NewHttpProvider(options *Options) (pkg.Provider, error) {
+func NewHttpProvider(options *Options) (domain.Provider, error) {
 	provider := &httpUserProvider{
 		Options: options,
 	}
