@@ -41,9 +41,9 @@ func NewConfigFromEnv() (*Config, error) {
 
 func (c *Config) Flags() *pflag.FlagSet {
 	fs := pflag.NewFlagSet("database config", pflag.ContinueOnError)
-	fs.StringVar(&c.Host, "database_host", c.Host, "database host address")
-	fs.StringVar(&c.DatabaseName, "database_name", c.DatabaseName, "database name")
-	fs.StringVar(&c.Password, "database_password", c.Password, "database password")
-	fs.StringVar(&c.User, "database_user", c.User, "database user")
+	fs.StringVar(&c.Host, "database-host", c.Host, "database host address")
+	fs.StringVar(&c.DatabaseName, "database-name", c.DatabaseName, "database name")
+	fs.StringVar(&c.Password, "database-password", c.Password, "database password")
+	fs.StringVar(&c.User, "database-user", c.User, "database user")
 	return fs
 }

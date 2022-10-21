@@ -2,7 +2,7 @@ package syncer
 
 import (
 	"context"
-	"log"
+	"k8s.io/klog/v2"
 	"reflect"
 	"user-syncer/pkg/api/v1alpha2"
 	"user-syncer/pkg/domain"
@@ -24,37 +24,43 @@ func NewKSSyncer(client rtclient.Client) domain.Syncer {
 	return &ksSyncer{client: client}
 }
 
-func (ks *ksSyncer) createOrUpdateUserInKS(ctx context.Context, user *v1alpha2.User) (bool, error) {
+func (ks *ksSyncer) createOrUpdateUserInKS(ctx context.Context, user *v1alpha2.User) (status, error) {
 	userGet := &v1alpha2.User{}
 	err := ks.client.Get(ctx, k8stypes.NamespacedName{Name: user.Name}, userGet)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			return false, ks.client.Create(ctx, user)
+			return statusCreated, ks.client.Create(ctx, user)
 		}
-		return false, err
+		return statusNoChange, err
 	}
 
-	if !reflect.DeepEqual(user, userGet) {
-		return true, ks.client.Update(ctx, user)
+	if userGet.Annotations["ldap-manager/org-id"] != user.Annotations["ldap-manager/org-id"] ||
+		userGet.Labels["iam.kubesphere.io/identify-provider"] != user.Labels["iam.kubesphere.io/identify-provider"] ||
+		userGet.Labels["iam.kubesphere.io/origin-uid"] != user.Labels["iam.kubesphere.io/origin-uid"] ||
+		!reflect.DeepEqual(userGet.Spec, user.Spec) ||
+		!reflect.DeepEqual(userGet.Status, user.Status) {
+		return statusUpdated, ks.client.Update(ctx, user)
 	}
-	return true, nil
+	return statusNoChange, nil
 }
 
 func (ks *ksSyncer) Sync(ctx context.Context, user *types.User) error {
 	cr := ks.toObject(user)
 
 	if user.Status == 0 {
-		exist, err := ks.createOrUpdateUserInKS(ctx, cr)
+		status, err := ks.createOrUpdateUserInKS(ctx, cr)
 		if err != nil {
-			if errors.IsInternalError(err) {
-				return err
-			}
-			log.Println(err)
+			klog.Error(err)
+			return err
+
 		} else {
-			if exist {
-				log.Printf("user existed, update user %s success", cr.Name)
-			} else {
-				log.Printf("create user %s success", cr.Name)
+			switch status {
+			case statusCreated:
+				klog.Infof("Kubernetes: created user %s successful", user.Name)
+			case statusUpdated:
+				klog.Infof("Kubernetes: user existed, updated user %s successful", user.Name)
+			case statusNoChange:
+				klog.Infof("Kubernetes: user existed, user %s no change", user.Name)
 			}
 		}
 	}

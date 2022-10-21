@@ -108,7 +108,7 @@ func (sess *txSession) Ctx(ctx context.Context) Session {
 }
 
 func (sess *txSession) Transaction(ctx context.Context, fn func(sess Session) error) error {
-	panic("nest transaction is not supported")
+	return nil
 	// return fn(&txSession{sess.WithContext(ctx)})
 }
 

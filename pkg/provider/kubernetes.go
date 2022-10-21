@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-
 	"user-syncer/pkg/api/v1alpha2"
 	"user-syncer/pkg/domain"
 	"user-syncer/pkg/types"
@@ -17,33 +16,32 @@ type ksProvider struct {
 
 func (k *ksProvider) List(ctx context.Context) ([]*types.User, error) {
 	users := make([]*types.User, 0)
-	list := &v1alpha2.UserList{}
-	err := k.client.List(ctx, list, nil)
+	var list v1alpha2.UserList
+	err := k.client.List(ctx, &list, rtclient.MatchingLabels{"iam.kubesphere.io/identify-provider": k.source})
 	if err != nil {
 		return nil, err
 	}
 	for _, user := range list.Items {
 		var userObj types.User
-		if user.Labels["iam.kubesphere.io/identify-provider"] == k.source {
-
-			if user.Status.State == "Active" {
-				userObj.Status = 1
-			} else {
-				userObj.Status = 0
-			}
-			userObj = types.User{
-				ID:     user.Labels["iam.kubesphere.io/origin-uid"],
-				Source: user.Labels["iam.kubesphere.io/identify-provider"],
-				Name:   user.Name,
-				Email:  user.Spec.Email,
-			}
+		userObj = types.User{
+			ID:      user.Labels["iam.kubesphere.io/origin-uid"],
+			LoginNo: user.Name,
+			OrgID:   user.Annotations["ldap-manager/org-id"],
+			Name:    user.Name,
+			Email:   user.Spec.Email,
 		}
+		if user.Status.State == "Active" {
+			userObj.Status = 1
+		} else {
+			userObj.Status = 0
+		}
+
 		users = append(users, &userObj)
 	}
 
 	return users, nil
 }
 
-func NewKSProvider(client rtclient.Client) domain.Provider {
-	return &ksProvider{client: client}
+func NewKSProvider(client rtclient.Client, source string) domain.Provider {
+	return &ksProvider{client: client, source: source}
 }
