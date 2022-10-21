@@ -11,10 +11,38 @@ type fakeProvider struct {
 	options *Options
 }
 
+type fakeOrgProvider struct {
+}
+
+func (f fakeOrgProvider) List(ctx context.Context) ([]interface{}, error) {
+	objs := make([]interface{}, 0)
+	for _, o := range orgs {
+		objs = append(objs, o)
+	}
+	return objs, nil
+}
+
+func NewFakeOrgProvider() domain.Provider {
+	return &fakeOrgProvider{}
+}
+
 func NewFakeProvider(options *Options) domain.Provider {
 	return &fakeProvider{
 		options: options,
 	}
+}
+
+var orgs = []*types.Org{
+	{
+		ID:          "51111",
+		OrgName:     "test-org-1",
+		ParentOrgID: "51112",
+	},
+	{
+		ID:          "51112",
+		OrgName:     "test-org-2",
+		ParentOrgID: "51113",
+	},
 }
 
 var users = []*types.User{
@@ -36,7 +64,7 @@ var users = []*types.User{
 		ID:     "3",
 		Name:   "fake-syncer-user-3",
 		Email:  "fakeprovider3@kubesphere.io",
-		OrgID:  "51111",
+		OrgID:  "51113",
 		Status: 0,
 	},
 	{
@@ -62,8 +90,8 @@ var users = []*types.User{
 	},
 }
 
-func (p *fakeProvider) List(ctx context.Context) ([]*types.User, error) {
-	ui := make([]*types.User, 0)
+func (p *fakeProvider) List(ctx context.Context) ([]interface{}, error) {
+	ui := make([]interface{}, 0)
 	for _, v := range users {
 		v.Source = p.options.Source
 		ui = append(ui, v)

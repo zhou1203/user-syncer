@@ -10,8 +10,6 @@ import (
 	"user-syncer/pkg/domain"
 	"user-syncer/pkg/types"
 
-	"k8s.io/klog/v2"
-
 	"k8s.io/apimachinery/pkg/util/json"
 
 	"github.com/gojek/heimdall/v7/httpclient"
@@ -33,12 +31,12 @@ func NewHttpProvider(options *Options) (domain.Provider, error) {
 
 }
 
-func (h *httpUserProvider) List(ctx context.Context) ([]*types.User, error) {
+func (h *httpUserProvider) List(ctx context.Context) ([]interface{}, error) {
+	objs := make([]interface{}, 0)
 	users := make([]*types.User, 0)
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/%s", h.Host, h.Path), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/%s", h.Host, h.UserPath), nil)
 	if err != nil {
-		klog.Error(err)
 		return nil, err
 	}
 
@@ -61,7 +59,8 @@ func (h *httpUserProvider) List(ctx context.Context) ([]*types.User, error) {
 			u.Name = strings.Replace(u.Name, "_", "-", -1)
 		}
 		u.Source = h.Source
+		objs = append(objs, u)
 	}
 
-	return users, nil
+	return objs, nil
 }

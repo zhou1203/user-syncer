@@ -14,8 +14,8 @@ type ksProvider struct {
 	source string
 }
 
-func (k *ksProvider) List(ctx context.Context) ([]*types.User, error) {
-	users := make([]*types.User, 0)
+func (k *ksProvider) List(ctx context.Context) ([]interface{}, error) {
+	users := make([]interface{}, 0)
 	var list v1alpha2.UserList
 	err := k.client.List(ctx, &list, rtclient.MatchingLabels{"iam.kubesphere.io/identify-provider": k.source})
 	if err != nil {

@@ -23,30 +23,44 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.TODO()
-			client, err := domain.NewKubernetesClient(kubeOptions)
+			fakeOptions := &provider.Options{Source: "test-source"}
+
+			kubernetesClient, err := domain.NewKubernetesClient(kubeOptions)
 			if err != nil {
 				klog.Error(err)
 				return err
 			}
-			dbConnect, err := db.Connect(dbConfig, nil)
-			if err != nil {
-				klog.Error(err)
-				return err
-			}
-
-			ksSyncer := syncer.NewKSSyncer(client)
-			dbSyncer := syncer.NewDBSyncer(dbConnect)
-
-			fakeProvider := provider.NewFakeProvider(&provider.Options{Source: "test-source"})
-			err = domain.NewSyncerOperator(ksSyncer).Sync(ctx, fakeProvider)
+			database, err := db.Connect(dbConfig, nil)
 			if err != nil {
 				klog.Error(err)
 				return err
 			}
 
-			err = domain.NewSyncerOperator(dbSyncer).Sync(ctx, provider.NewKSProvider(client, "test-source"))
+			ksSyncer := syncer.NewKSSyncer(kubernetesClient)
+			dbSyncer := syncer.NewDBSyncer(database)
+			orgDBSyncer := syncer.NewOrgDBSyncer(database)
+
+			fakeUserProvider := provider.NewFakeProvider(fakeOptions)
+			fakeOrgProvider := provider.NewFakeOrgProvider()
+			ksProvider := provider.NewKSProvider(kubernetesClient, fakeOptions.Source)
+
+			task := []*domain.Task{
+				{
+					Syncer:   ksSyncer,
+					Provider: fakeUserProvider,
+				},
+				{
+					Syncer:   dbSyncer,
+					Provider: ksProvider,
+				},
+				{
+					Syncer:   orgDBSyncer,
+					Provider: fakeOrgProvider,
+				},
+			}
+
+			err = domain.NewSyncerOperator(task...).Sync(ctx)
 			if err != nil {
-				klog.Error(err)
 				return err
 			}
 

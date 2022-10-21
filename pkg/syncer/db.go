@@ -33,7 +33,8 @@ const (
 	columnAppAcctStatus = "APP_ACCT_STATUS"
 )
 
-func (ds *dbSyncer) Sync(ctx context.Context, user *types.User) error {
+func (ds *dbSyncer) Sync(ctx context.Context, obj interface{}) error {
+	user := obj.(*types.User)
 	if status, err := ds.createOrUpdateInDB(ctx, user); err != nil {
 		return err
 	} else {
@@ -54,12 +55,7 @@ func NewDBSyncer(db db.Database) domain.Syncer {
 }
 
 func (ds *dbSyncer) createOrUpdateInDB(ctx context.Context, user *types.User) (status, error) {
-	if user.Status == 0 {
-		user.Status = 1
-		user.LoginNo = user.Name
-	} else {
-		return statusNoChange, nil
-	}
+	user.LoginNo = user.Name
 
 	userGet := &types.User{}
 	err := ds.db.Ctx(ctx).SelectFrom(tableUser).Where("USER_ID", user.ID).One(userGet)

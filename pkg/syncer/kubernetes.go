@@ -44,15 +44,14 @@ func (ks *ksSyncer) createOrUpdateUserInKS(ctx context.Context, user *v1alpha2.U
 	return statusNoChange, nil
 }
 
-func (ks *ksSyncer) Sync(ctx context.Context, user *types.User) error {
+func (ks *ksSyncer) Sync(ctx context.Context, obj interface{}) error {
+	user := obj.(*types.User)
 	cr := ks.toObject(user)
 
 	if user.Status == 0 {
 		status, err := ks.createOrUpdateUserInKS(ctx, cr)
 		if err != nil {
-			klog.Error(err)
 			return err
-
 		} else {
 			switch status {
 			case statusCreated:
