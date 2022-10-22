@@ -12,5 +12,9 @@ RUN go build -v -o /usr/local/bin/user-syncer ./cmd
 
 FROM alpine:3.16
 RUN apk add --update mysql-client
+
+COPY ./tmp/docker/migrate /usr/local/bin/migrate
+COPY ./tmp/docker/table ./migate/table
+
 COPY --from=builder /usr/src/app/cmd /usr/local/bin/
 CMD ["sh"]

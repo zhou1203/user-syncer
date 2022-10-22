@@ -10,5 +10,8 @@ job:
   image: wenhahozhou/user-syncer:latest
   command:
     kubeconfig: InCluster
-    source: ldap
+    source: ldap-manager
+    host:
+    userPath:
+    orgPath:
 

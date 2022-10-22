@@ -15,28 +15,20 @@ spec:
         - name: user-generator
           image: {{ .Values.job.image }}
           command:
+            - migrate -path=/usr/src/app/migrate/table -database="mysql://${DATABASE_USER}:${DATABASE_PASSWORD}@tcp(${DATABASE_HOST})/${DATABASE_NAME}" -verbose up &&
             - user-generator
             - --kubeconfig={{ .Values.job.command.kubeconfig }}
             - --source={{ .Values.job.command.source }}
+            - --host={{ .Values.job.command.host }}
+            - --user-path={{ .Values.job.command.userPath }}
+            - --org-path={{ .Values.job.command.orgPath }}
           env:
             - name: DATABASE_USER
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Release.Name }}-config
-                  key: DATABASE_USER
+              value: root
             - name: DATABASE_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Release.Name }}-config
-                  key: DATABASE_PASSWORD
+              value: {{ .Values.mysql.auth.rootPassword }}
             - name: DATABASE_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Release.Name }}-config
-                  key: DATABASE_HOST
+              value: {{ .Values.mysql.fullnameOverride }}
             - name: DATABASE_NAME
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Release.Name }}-config
-                  key: DATABASE_NAME
+              value: {{ .Values.mysql.auth.database}}
 
