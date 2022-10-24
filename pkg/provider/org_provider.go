@@ -52,7 +52,9 @@ func (h *orgProvider) List(ctx context.Context) ([]interface{}, error) {
 	}
 
 	for _, v := range orgs {
-		objs = append(objs, v)
+		if v.Status == 0 {
+			objs = append(objs, v)
+		}
 	}
 	return objs, nil
 }

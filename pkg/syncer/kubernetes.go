@@ -4,6 +4,7 @@ import (
 	"context"
 	"k8s.io/klog/v2"
 	"reflect"
+	"strconv"
 	"user-syncer/pkg/api/v1alpha2"
 	"user-syncer/pkg/domain"
 	"user-syncer/pkg/types"
@@ -76,7 +77,7 @@ func (ks *ksSyncer) toObject(u *types.User) *v1alpha2.User {
 			Name: u.Name,
 			Labels: map[string]string{
 				"iam.kubesphere.io/identify-provider": u.Source,
-				"iam.kubesphere.io/origin-uid":        u.ID,
+				"iam.kubesphere.io/origin-uid":        strconv.FormatInt(u.ID, 10),
 			},
 			Annotations: map[string]string{
 				"ldap-manager/org-id": u.OrgID,

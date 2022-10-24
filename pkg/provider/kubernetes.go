@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"strconv"
 	"user-syncer/pkg/api/v1alpha2"
 	"user-syncer/pkg/domain"
 	"user-syncer/pkg/types"
@@ -23,8 +24,12 @@ func (k *ksProvider) List(ctx context.Context) ([]interface{}, error) {
 	}
 	for _, user := range list.Items {
 		var userObj types.User
+		userID, err := strconv.ParseInt(user.Labels["iam.kubesphere.io/origin-uid"], 10, 64)
+		if err != nil {
+			return nil, err
+		}
 		userObj = types.User{
-			ID:      user.Labels["iam.kubesphere.io/origin-uid"],
+			ID:      userID,
 			LoginNo: user.Name,
 			OrgID:   user.Annotations["ldap-manager/org-id"],
 			Name:    user.Name,
