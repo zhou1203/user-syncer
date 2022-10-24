@@ -29,7 +29,9 @@ to quickly create a Cobra application.`,
 				klog.Error(err)
 				return err
 			}
-
+			klog.Infof("http Options %+v", httpProviderOptions)
+			klog.Infof("kube Options %+v", kubeOptions)
+			klog.Infof("db Options %+v", dbConfig)
 			kubernetesClient, err := domain.NewKubernetesClient(kubeOptions)
 			if err != nil {
 				klog.Error(err)
@@ -46,7 +48,17 @@ to quickly create a Cobra application.`,
 			orgDBSyncer := syncer.NewOrgDBSyncer(database)
 
 			userProvider, err := provider.NewHttpProvider(httpProviderOptions)
+			if err != nil {
+				klog.Error(err)
+				return err
+			}
+
 			orgProvider, err := provider.NewOrgProvider(httpProviderOptions)
+			if err != nil {
+				klog.Error(err)
+				return err
+			}
+
 			ksProvider := provider.NewKSProvider(kubernetesClient, httpProviderOptions.Source)
 
 			task := []*domain.Task{

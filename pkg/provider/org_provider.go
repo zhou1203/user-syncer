@@ -3,13 +3,14 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"fmt"
-	"github.com/gojek/heimdall/v7/httpclient"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"time"
 	"user-syncer/pkg/domain"
 	"user-syncer/pkg/types"
+
+	"github.com/gojek/heimdall/v7/httpclient"
 )
 
 type orgProvider struct {
@@ -32,7 +33,13 @@ func (h *orgProvider) List(ctx context.Context) ([]interface{}, error) {
 	orgs := make([]*types.Org, 0)
 	objs := make([]interface{}, 0)
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/%s", h.Host, h.OrgPath), nil)
+	u := url.URL{
+		Scheme: "http",
+		Host:   h.Options.Host,
+		Path:   h.Options.OrgPath,
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
 	if err != nil {
 		return nil, err
 	}

@@ -2,12 +2,13 @@ package syncer
 
 import (
 	"context"
-	"k8s.io/klog/v2"
 	"reflect"
 	"strconv"
 	"user-syncer/pkg/api/v1alpha2"
 	"user-syncer/pkg/domain"
 	"user-syncer/pkg/types"
+
+	"k8s.io/klog/v2"
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -49,21 +50,20 @@ func (ks *ksSyncer) Sync(ctx context.Context, obj interface{}) error {
 	user := obj.(*types.User)
 	cr := ks.toObject(user)
 
-	if user.Status == 0 {
-		status, err := ks.createOrUpdateUserInKS(ctx, cr)
-		if err != nil {
-			return err
-		} else {
-			switch status {
-			case statusCreated:
-				klog.Infof("Kubernetes: created user %s successful", user.Name)
-			case statusUpdated:
-				klog.Infof("Kubernetes: user existed, updated user %s successful", user.Name)
-			case statusNoChange:
-				klog.Infof("Kubernetes: user existed, user %s no change", user.Name)
-			}
+	status, err := ks.createOrUpdateUserInKS(ctx, cr)
+	if err != nil {
+		return err
+	} else {
+		switch status {
+		case statusCreated:
+			klog.Infof("Kubernetes: created user %s successful", user.Name)
+		case statusUpdated:
+			klog.Infof("Kubernetes: user existed, updated user %s successful", user.Name)
+		case statusNoChange:
+			klog.Infof("Kubernetes: user existed, user %s no change", user.Name)
 		}
 	}
+
 	return nil
 }
 

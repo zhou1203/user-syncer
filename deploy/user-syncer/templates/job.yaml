@@ -15,11 +15,15 @@ spec:
         - name: user-syncer
           image: {{ .Values.job.image }}
           imagePullPolicy: {{ .Values.job.imagePullPolicy }}
+          lifecycle:
+            postStart:
+              exec: 
+                command: 
+                  - /bin/sh
+                  - -c
+                  - migrate -path=/migrate/table -database="mysql://${DATABASE_USER}:${DATABASE_PASSWORD}@tcp(${DATABASE_HOST})/${DATABASE_NAME}" -verbose up
           command: 
-            - /bin/sh
-          args:
-            - -c
-            - migrate -path=/migrate/table -database="mysql://${DATABASE_USER}:${DATABASE_PASSWORD}@tcp(${DATABASE_HOST})/${DATABASE_NAME}" -verbose up && user-syncer
+            - user-syncer
             - --kubeconfig={{ .Values.job.command.kubeconfig }}
             - --source={{ .Values.job.command.source }}
             - --host={{ .Values.job.command.host }}

@@ -2,9 +2,9 @@ package provider
 
 import (
 	"context"
-	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 	"user-syncer/pkg/domain"
@@ -35,7 +35,13 @@ func (h *httpUserProvider) List(ctx context.Context) ([]interface{}, error) {
 	objs := make([]interface{}, 0)
 	users := make([]*types.User, 0)
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s/%s", h.Host, h.UserPath), nil)
+	u := url.URL{
+		Scheme: "http",
+		Host:   h.Options.Host,
+		Path:   h.Options.UserPath,
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -55,11 +61,11 @@ func (h *httpUserProvider) List(ctx context.Context) ([]interface{}, error) {
 	}
 
 	for _, u := range users {
-		if strings.Contains(u.Name, "_") {
+		if u.Status == 0 {
 			u.Name = strings.Replace(u.Name, "_", "-", -1)
+			u.Source = h.Source
+			objs = append(objs, u)
 		}
-		u.Source = h.Source
-		objs = append(objs, u)
 	}
 
 	return objs, nil
