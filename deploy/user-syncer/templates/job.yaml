@@ -7,16 +7,19 @@ spec:
   template:
     metadata:
       labels:
-        app: user-generator
+        app: user-syncer
     spec:
       restartPolicy: OnFailure
-      serviceAccountName: user-generator-sa
+      serviceAccountName: {{ .Release.Name }}-sa
       containers:
-        - name: user-generator
+        - name: user-syncer
           image: {{ .Values.job.image }}
-          command:
-            - migrate -path=/usr/src/app/migrate/table -database="mysql://${DATABASE_USER}:${DATABASE_PASSWORD}@tcp(${DATABASE_HOST})/${DATABASE_NAME}" -verbose up &&
-            - user-generator
+          imagePullPolicy: {{ .Values.job.imagePullPolicy }}
+          command: 
+            - /bin/sh
+          args:
+            - -c
+            - migrate -path=/migrate/table -database="mysql://${DATABASE_USER}:${DATABASE_PASSWORD}@tcp(${DATABASE_HOST})/${DATABASE_NAME}" -verbose up && user-syncer
             - --kubeconfig={{ .Values.job.command.kubeconfig }}
             - --source={{ .Values.job.command.source }}
             - --host={{ .Values.job.command.host }}

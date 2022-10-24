@@ -12,7 +12,7 @@ metadata:
   name: {{ .Release.Name }}-role
 rules:
   - verbs:
-      - create
+      - '*'
     apiGroups:
       - iam.kubesphere.io
     resources:
