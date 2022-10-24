@@ -1,0 +1,18 @@
+mysql:
+  auth:
+    rootPassword: P@88w0rd
+    database: ldap-manager
+    username: chinamobile
+    password: P@88w0rd
+  fullnameOverride: mysql
+
+job:
+  image: wenhaozhou/user-syncer:v20221024-1
+  imagePullPolicy: Always
+  command:
+    kubeconfig: InCluster
+    source: ldap-manager
+    host: 10.12.3.28:8080
+    userPath: /ldapManager/api/search/user/findAllUsers
+    orgPath: /ldapManager/api/search/org/findAllOrgs
+

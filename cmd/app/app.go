@@ -2,11 +2,12 @@ package app
 
 import (
 	"context"
-	"k8s.io/klog/v2"
 	"user-syncer/pkg/db"
 	"user-syncer/pkg/domain"
 	"user-syncer/pkg/provider"
 	"user-syncer/pkg/syncer"
+
+	"k8s.io/klog/v2"
 
 	"github.com/spf13/cobra"
 )
@@ -14,7 +15,6 @@ import (
 func NewCommand() *cobra.Command {
 	kubeOptions := domain.NewKubeOptions()
 	httpProviderOptions := provider.NewOptions()
-	dbConfig := &db.Config{}
 	rootCmd := &cobra.Command{
 		Use:   "user-syncer",
 		Short: "A syncer for Cobra based Applications",
@@ -23,7 +23,12 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.TODO()
-			fakeOptions := &provider.Options{Source: "test-source"}
+
+			dbConfig, err := db.NewConfigFromEnv()
+			if err != nil {
+				klog.Error(err)
+				return err
+			}
 
 			kubernetesClient, err := domain.NewKubernetesClient(kubeOptions)
 			if err != nil {
@@ -40,14 +45,14 @@ to quickly create a Cobra application.`,
 			dbSyncer := syncer.NewDBSyncer(database)
 			orgDBSyncer := syncer.NewOrgDBSyncer(database)
 
-			fakeUserProvider := provider.NewFakeProvider(fakeOptions)
-			fakeOrgProvider := provider.NewFakeOrgProvider()
-			ksProvider := provider.NewKSProvider(kubernetesClient, fakeOptions.Source)
+			userProvider, err := provider.NewHttpProvider(httpProviderOptions)
+			orgProvider, err := provider.NewOrgProvider(httpProviderOptions)
+			ksProvider := provider.NewKSProvider(kubernetesClient, httpProviderOptions.Source)
 
 			task := []*domain.Task{
 				{
 					Syncer:   ksSyncer,
-					Provider: fakeUserProvider,
+					Provider: userProvider,
 				},
 				{
 					Syncer:   dbSyncer,
@@ -55,7 +60,7 @@ to quickly create a Cobra application.`,
 				},
 				{
 					Syncer:   orgDBSyncer,
-					Provider: fakeOrgProvider,
+					Provider: orgProvider,
 				},
 			}
 
@@ -70,7 +75,6 @@ to quickly create a Cobra application.`,
 	fs := rootCmd.Flags()
 	fs.AddFlagSet(kubeOptions.Flags())
 	fs.AddFlagSet(httpProviderOptions.Flags())
-	fs.AddFlagSet(dbConfig.Flags())
 
 	return rootCmd
 }
