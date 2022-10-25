@@ -41,6 +41,7 @@ func (ks *ksSyncer) createOrUpdateUserInKS(ctx context.Context, user *v1alpha2.U
 		userGet.Labels["iam.kubesphere.io/origin-uid"] != user.Labels["iam.kubesphere.io/origin-uid"] ||
 		!reflect.DeepEqual(userGet.Spec, user.Spec) ||
 		!reflect.DeepEqual(userGet.Status, user.Status) {
+		user.ObjectMeta.ResourceVersion = userGet.ObjectMeta.ResourceVersion
 		return statusUpdated, ks.client.Update(ctx, user)
 	}
 	return statusNoChange, nil

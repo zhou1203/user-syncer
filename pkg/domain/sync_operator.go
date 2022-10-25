@@ -2,6 +2,8 @@ package domain
 
 import (
 	"context"
+
+	"k8s.io/klog/v2"
 )
 
 type SyncerOperator struct {
@@ -31,12 +33,14 @@ func (o *SyncerOperator) Sync(ctx context.Context) error {
 func sync(ctx context.Context, task *Task) error {
 	objs, err := task.Provider.List(ctx)
 	if err != nil {
+		klog.Error(err)
 		return err
 	}
 
 	for _, obj := range objs {
 		err := task.Syncer.Sync(ctx, obj)
 		if err != nil {
+			klog.Error(err)
 			continue
 		}
 	}
