@@ -18,7 +18,7 @@ func Migrate(config *Config) error {
 		klog.Errorf("waitFor connect failed, %+v, %s", db, err.Error())
 		return err
 	}
-	time.Sleep(10 * time.Second)
+
 	driver, err := mysql.WithInstance(db, &mysql.Config{})
 	if err != nil {
 		klog.Errorf("new database driver failed, %s", err.Error())
