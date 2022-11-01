@@ -2,9 +2,11 @@ mysql:
   auth:
     rootPassword: P@88w0rd
     database: ldap-manager
-    username: chinamobile
     password: P@88w0rd
   fullnameOverride: mysql
+
+operator:
+  image: wenhaozhou/user-syncer-operator:v20221101-2
 
 job:
   image: user-syncer:latest

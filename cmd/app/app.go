@@ -37,6 +37,13 @@ to quickly create a Cobra application.`,
 				klog.Error(err)
 				return err
 			}
+
+			err = db.Migrate(dbConfig)
+			if err != nil {
+				klog.Error(err)
+				return err
+			}
+
 			database, err := db.Connect(dbConfig, nil)
 			if err != nil {
 				klog.Error(err)
@@ -44,7 +51,6 @@ to quickly create a Cobra application.`,
 			}
 
 			ksSyncer := syncer.NewKSSyncer(kubernetesClient)
-			dbSyncer := syncer.NewDBSyncer(database)
 			orgDBSyncer := syncer.NewOrgDBSyncer(database)
 
 			userProvider, err := provider.NewHttpProvider(httpProviderOptions)
@@ -59,16 +65,10 @@ to quickly create a Cobra application.`,
 				return err
 			}
 
-			ksProvider := provider.NewKSProvider(kubernetesClient, httpProviderOptions.Source)
-
 			task := []*domain.Task{
 				{
 					Syncer:   ksSyncer,
 					Provider: userProvider,
-				},
-				{
-					Syncer:   dbSyncer,
-					Provider: ksProvider,
 				},
 				{
 					Syncer:   orgDBSyncer,

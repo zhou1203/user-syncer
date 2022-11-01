@@ -1,27 +1,23 @@
-apiVersion: batch/v1
-kind: Job
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-job
+  name: {{ .Release.Name }}-operator
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: operator
 spec:
+  selector:
+    matchLabels:
+      app: operator
   template:
     metadata:
       labels:
-        app: user-syncer
+        app: operator
     spec:
-      restartPolicy: OnFailure
       serviceAccountName: {{ .Release.Name }}-sa
       containers:
-        - name: user-syncer
-          image: {{ .Values.job.image }}
-          imagePullPolicy: {{ .Values.job.imagePullPolicy }}
-          command:
-            - user-syncer
-            - --kubeconfig={{ .Values.job.command.kubeconfig }}
-            - --source={{ .Values.job.command.source }}
-            - --host={{ .Values.job.command.host }}
-            - --user-path={{ .Values.job.command.userPath }}
-            - --org-path={{ .Values.job.command.orgPath }}
+        - name: user-syncer-operator
+          image: {{ .Values.operator.image }}
           env:
             - name: DATABASE_HOST
               valueFrom:
@@ -43,4 +39,9 @@ spec:
                 configMapKeyRef:
                   name: {{ .Release.Name }}-config
                   key: DATABASE_PASSWORD
-
+          command:
+            - user-syncer-operator
+            - --database-host=$(DATABASE_HOST)
+            - --database-name=$(DATABASE_NAME)
+            - --database-user=$(DATABASE_USER)
+            - --database-password=$(DATABASE_PASSWORD)

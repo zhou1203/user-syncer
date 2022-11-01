@@ -7,4 +7,4 @@ data:
   DATABASE_HOST: {{ .Values.mysql.fullnameOverride }}
   DATABASE_NAME: {{ .Values.mysql.auth.database }}
   DATABASE_PASSWORD: {{ .Values.mysql.auth.password }}
-  DATABASE_USER: {{ .Values.mysql.auth.username }}
+  DATABASE_USER: root
